@@ -1,0 +1,205 @@
+:root {
+  --cor-fundo: #0a0a0a;
+  --cor-primaria: #00ff00;
+  --cor-secundaria: #1a1a1a;
+  --cor-texto: #ccffcc;
+  --cor-hover: #00ff66;
+  --cor-borda: #00ff00;
+  --fonte-principal: 'Courier New', monospace;
+  --sombra-texto: 0 0 8px #00ff00;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--fonte-principal);
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: var(--cor-secundaria);
+  width: 250px;
+  padding: 20px;
+  box-shadow: 2px 0 10px var(--cor-primaria);
+  transition: transform 0.3s ease;
+}
+
+.sidebar h2 {
+  color: var(--cor-primaria);
+  text-shadow: var(--sombra-texto);
+  margin-bottom: 20px;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  color: var(--cor-texto);
+  border: 2px solid var(--cor-borda);
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: var(--sombra-texto);
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background-color: var(--cor-hover);
+  color: var(--cor-fundo);
+}
+
+/* Toggle */
+.toggle-btn {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  font-size: 24px;
+  color: var(--cor-primaria);
+  cursor: pointer;
+  z-index: 100;
+  display: none;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    z-index: 10;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .toggle-btn {
+    display: block;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+}
+
+
+pre {
+  background-color: #111;
+  color: #0f0;
+  padding: 10px;
+  overflow-x: auto;
+  font-family: monospace;
+  border: 1px solid #00ff00;
+  box-shadow: 0 0 5px #00ff00;
+}
+
+code {
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul li::before {
+  content: "";
+  color: #00ff00;
+}
+
+a {
+  color: var(--cor-hover);
+  text-decoration: underline;
+}
+
+h1, h2 {
+  color: var(--cor-primaria);
+  text-shadow: var(--sombra-texto);
+  margin-top: 30px;
+}
+
+
+.digitando {
+  color: var(--cor-hover);
+  font-family: var(--fonte-principal);
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  position: relative;
+  border-right: 2px solid var(--cor-primaria);
+  animation: blink-borda 1s step-end infinite;
+}
+
+@keyframes blink-borda {
+  0%, 100% {
+    border-right-color: transparent;
+  }
+  50% {
+    border-right-color: var(--cor-primaria);
+  }
+}
+
+
+.card {
+  background-color: var(--cor-secundaria);
+  border: 2px solid var(--cor-borda);
+  box-shadow: 0 0 10px var(--cor-borda);
+  border-radius: 10px;
+  overflow: hidden;
+  width: 320px;
+  margin: 20px auto;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.card img {
+  width: 100%;
+  display: block;
+  border-bottom: 2px solid var(--cor-borda);
+}
+
+.card-conteudo {
+  padding: 15px;
+  color: var(--cor-texto);
+}
+
+.card-conteudo h3 {
+  color: var(--cor-primaria);
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-shadow: var(--sombra-texto);
+}
+
+.card-conteudo p {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+
+code {
+  display: block;
+  background-color: #111;
+  color: var(--cor-primaria);
+  padding: 10px;
+  font-family: 'Courier New', monospace;
+  border: 1px solid var(--cor-borda);
+  margin-bottom: 10px;
+  word-break: break-all;
+}

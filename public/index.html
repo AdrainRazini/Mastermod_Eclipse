@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Master Mods</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div id="sidebar" class="sidebar">
+   <h2><i class="fas fa-terminal"></i> Master Mods</h2>
+   <button class="btn" onclick="Event('Sobre')"><i class="fas fa-crosshairs"></i> MasterMods</button>
+   <button class="btn" onclick="Event('Aimbot')"><i class="fas fa-crosshairs"></i> Aimbot</button>
+   <button class="btn" onclick="Event('Esp')"><i class="fas fa-eye"></i> ESP Visor</button>
+   <button class="btn" onclick="Event('Fly')"><i class="fas fa-plane"></i> Fly</button>
+   <button class="btn" onclick="Event('Speed')"><i class="fas fa-bolt"></i> Speed Hack</button>
+
+</div>
+
+  <div id="toggleBtn" class="toggle-btn">
+    <i class="fas fa-bars"></i>
+  </div>
+
+  <main id="main-content" class="main-content">
+  <h1><i class="fas fa-terminal"></i> Bem-vindo, Amigo :)</h1>
+  <p>Use o menu à esquerda para explorar os módulos do <strong>Master Mods</strong>.</p>
+  <p id="digitando" class="digitando"></p>
+
+<div class="card">
+  <img src="img/game_mod.png" alt="Preview do Mod">
+  <div class="card-conteudo">
+    <h3><i class="fas fa-cube"></i> MasterMods</h3>
+     
+    <p>
+      Este mod permite <strong>voar</strong>, <strong>teleportar</strong>, ver <strong>coordenadas</strong>, 
+      editar partes do jogo, criar itens, jogar com <strong>aimbot</strong>, 
+      atravessar paredes pelo mapa com <strong>velocidade ajustável</strong>.
+      Clique no botão para copiar o script.
+    </p>
+
+    
+    <code id="codigo-mod">
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/AdrainRazini/mastermod/refs/heads/main/apresentar"))()
+    </code>
+
+    <button class="btn" onclick="copiarCodigo()">📋 Copiar Script</button>
+  </div>
+</div>
+
+</div>
+
+
+</main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
