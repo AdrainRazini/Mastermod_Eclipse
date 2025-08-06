@@ -1,29 +1,151 @@
+
 -- URL da API do GitHub para listar os scripts
 local GITHUB_USER = "AdrainRazini"
 local GITHUB_REPO = "Mastermod_Eclipse"
+local GITHUB_REPO_NAME = "MastermodEclipse"
 local Owner = "Adrian75556435"
 local SCRIPTS_FOLDER_URL = "https://api.github.com/repos/" .. GITHUB_USER .. "/" .. GITHUB_REPO .. "/contents/script"
 local IMG_ICON = "rbxassetid://117585506735209"
 local NAME_MOD_MENU = "ModMenuGui"
 
--- Verificar se já existe um ScreenGui com o nome "Mastermod"
-local existingScreenGui = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild(GITHUB_REPO)
+
+local config = {}
+
+-- Criação da lista de cores 
+local colors = {
+	Red = Color3.fromRGB(255, 0, 0),
+	Green = Color3.fromRGB(0, 255, 0),
+	Blue = Color3.fromRGB(0, 0, 255),
+	Yellow = Color3.fromRGB(255, 255, 0),
+	Orange = Color3.fromRGB(255, 165, 0),
+	Purple = Color3.fromRGB(128, 0, 128),
+	Pink = Color3.fromRGB(255, 105, 180),
+	White = Color3.fromRGB(255, 255, 255),
+	Black = Color3.fromRGB(0, 0, 0),
+	Gray = Color3.fromRGB(128, 128, 128),
+	DarkGray = Color3.fromRGB(50, 50, 50),
+	LightGray = Color3.fromRGB(200, 200, 200),
+	Cyan = Color3.fromRGB(0, 255, 255),
+	Magenta = Color3.fromRGB(255, 0, 255),
+	Brown = Color3.fromRGB(139, 69, 19),
+	Gold = Color3.fromRGB(255, 215, 0),
+	Silver = Color3.fromRGB(192, 192, 192),
+	Maroon = Color3.fromRGB(128, 0, 0),
+	Navy = Color3.fromRGB(0, 0, 128),
+	Lime = Color3.fromRGB(50, 205, 50),
+	Olive = Color3.fromRGB(128, 128, 0),
+	Teal = Color3.fromRGB(0, 128, 128),
+	Aqua = Color3.fromRGB(0, 255, 170),
+	Coral = Color3.fromRGB(255, 127, 80),
+	Crimson = Color3.fromRGB(220, 20, 60),
+	Indigo = Color3.fromRGB(75, 0, 130),
+	Turquoise = Color3.fromRGB(64, 224, 208),
+	Slate = Color3.fromRGB(112, 128, 144),
+	Chocolate = Color3.fromRGB(210, 105, 30)
+}
+
+
+
+-- 🖼️ Função utilitária para criar UI Corner Obs: Aplicar Ui nas frames
+local function applyCorner(instance, radius)
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = radius or UDim.new(0, 6)
+	corner.Parent = instance
+end
+
+-- Função para aplicar contorno neon via UIStroke
+local function applyUIStroke(instance, colorName, thickness)
+	thickness = thickness or 2
+	local stroke = Instance.new("UIStroke")
+	stroke.Parent = instance
+	stroke.Thickness = thickness
+	stroke.LineJoinMode = Enum.LineJoinMode.Round
+	stroke.Transparency = 0
+	-- Escolhe cor da paleta ou usa branco como fallback
+	stroke.Color = colors[colorName] or Color3.new(1, 1, 1)
+end
+
+local function applyNeonUIStroke(instance, cores, velocidade)
+	velocidade = velocidade or 0.1
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 2
+	stroke.Transparency = 0
+	stroke.LineJoinMode = Enum.LineJoinMode.Round
+	stroke.Parent = instance
+
+	-- Se for string única, usa como cor fixa
+	if typeof(cores) == "string" then
+		stroke.Color = colors[cores] or Color3.new(1, 1, 1)
+		return
+	end
+
+	-- Se for tabela, anima entre elas
+	task.spawn(function()
+		local index = 1
+		while stroke.Parent do
+			local cor = cores[index]
+			stroke.Color = colors[cor] or Color3.new(1, 1, 1)
+			index = index % #cores + 1
+			task.wait(velocidade)
+		end
+	end)
+end
+
+local RunService = game:GetService("RunService")
+
+local function applyRotatingGradientUIStroke(instance, cor1, cor2, cor3)
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 2
+	stroke.Transparency = 0
+	stroke.LineJoinMode = Enum.LineJoinMode.Round
+	stroke.Color = colors.White
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	stroke.Parent = instance
+
+	local gradient = Instance.new("UIGradient")
+	gradient.Rotation = 0
+	gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0.0, colors[cor1] or Color3.new(1, 1, 1)),
+		ColorSequenceKeypoint.new(0.5, colors[cor2] or Color3.new(1, 1, 1)),
+		ColorSequenceKeypoint.new(1.0, colors[cor3] or Color3.new(1, 1, 1))
+	})
+	gradient.Parent = stroke
+
+	-- Animação da rotação do gradiente
+	local angle = 0
+	RunService.RenderStepped:Connect(function()
+		if gradient.Parent == nil then return end
+		angle = (angle + 0.5) % 360 -- Velocidade de rotação
+		gradient.Rotation = angle
+	end)
+end
+
+
+
+--=========================================================--
+
+
+
+
+-- Verificar se já existe um ScreenGui com o nome "ModMenu"
+local existingScreenGui = game.Players.LocalPlayer:WaitForChild("PlayerGui"):FindFirstChild(GITHUB_REPO_NAME)
 
 -- Se já existir, retorna para evitar a criação do GUI
 if existingScreenGui then
 	return
 end
 
--- Função de boas-vindas
-local function hello()
-	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = "MASTERMOD",
-		Text = Owner,
-		Icon = "rbxthumb://type=Asset&id=102637810511338&w=150&h=150",
-		Duration = 16
-	})
-end
 
+function hello ()
+
+	game:GetService("StarterGui"):SetCore("SendNotification", { 
+		Title = GITHUB_REPO;
+		Text = Owner;
+		Icon = "rbxthumb://type=Asset&id=102637810511338&w=150&h=150"})
+	Duration = 16;
+
+end
 
 
 function criar_Gui_Frame()
@@ -33,7 +155,7 @@ function criar_Gui_Frame()
 	local PlayerGui = player:WaitForChild("PlayerGui")
 
 	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = GITHUB_REPO
+	ScreenGui.Name = GITHUB_REPO_NAME
 	ScreenGui.Parent = PlayerGui
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -46,10 +168,16 @@ function criar_Gui_Frame()
 	ModMenu.Active = true
 	ModMenu.Draggable = true
 
+	applyCorner(ModMenu, UDim.new(0, 8))
+	applyRotatingGradientUIStroke(ModMenu, "Cyan", "Magenta", "Blue")
+--[[
+
 	Instance.new("UICorner", ModMenu).CornerRadius = UDim.new(0, 10)
 	local stroke = Instance.new("UIStroke", ModMenu)
 	stroke.Thickness = 2
 	stroke.Color = Color3.fromRGB(60, 120, 255)
+
+]]
 
 	local TitleBar = Instance.new("Frame")
 	TitleBar.Name = "TitleBar"
@@ -231,7 +359,7 @@ function criar_Gui_Frame()
 
 	-- Carregar scripts do GitHub
 	local scripts = {
-        {name = "Print", path = "example.lua"},
+		{name = "Print", path = "example.lua"},
 	}
 
 	for _, script in ipairs(scripts) do
