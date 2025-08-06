@@ -170,14 +170,7 @@ function criar_Gui_Frame()
 
 	applyCorner(ModMenu, UDim.new(0, 8))
 	applyRotatingGradientUIStroke(ModMenu, "Cyan", "Magenta", "Blue")
---[[
 
-	Instance.new("UICorner", ModMenu).CornerRadius = UDim.new(0, 10)
-	local stroke = Instance.new("UIStroke", ModMenu)
-	stroke.Thickness = 2
-	stroke.Color = Color3.fromRGB(60, 120, 255)
-
-]]
 
 	local TitleBar = Instance.new("Frame")
 	TitleBar.Name = "TitleBar"
@@ -224,6 +217,271 @@ function criar_Gui_Frame()
 	layout.Padding = UDim.new(0, 6)
 	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+
+
+
+
+--=========================================================--
+
+-- Criação da Frame de configuração
+
+-- 📦 Configurações
+local configBtn = Instance.new("TextButton")
+configBtn.Size = UDim2.new(0, 30, 0, 30)
+configBtn.Position = UDim2.new(1, -30, 1, -30)
+configBtn.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+configBtn.Text = "⚙️"
+configBtn.TextColor3 = Color3.new(1,1,1)
+configBtn.Font = Enum.Font.GothamBold
+configBtn.TextSize = 20
+configBtn.Parent = ModMenu
+applyCorner(configBtn)
+
+-- ⚙️ Painel de Config
+local configFrame = Instance.new("Frame")
+configFrame.Size = UDim2.new(0, 300, 0, 400)
+configFrame.Position = UDim2.new(0, ModMenu.Position.X.Offset + 220, 0, ModMenu.Position.Y.Offset)
+configFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+configFrame.Visible = false
+configFrame.Active = true
+configFrame.Draggable = true
+configFrame.Parent = ScreenGui
+applyCorner(configFrame, UDim.new(0, 8))
+
+local configTitle = Instance.new("TextLabel")
+configTitle.Size = UDim2.new(1, 0, 0, 30)
+configTitle.BackgroundTransparency = 1
+configTitle.Text = "🔧 Configurações"
+configTitle.TextColor3 = Color3.new(1, 1, 1)
+configTitle.Font = Enum.Font.GothamBold
+configTitle.TextSize = 18
+configTitle.Parent = configFrame
+
+--=========================================================--
+
+
+	-- Criação de seções Obs: Melhoria do antigo Frame Config
+
+	-- 🌐 Seções
+	local secoes = {
+		["Player"] = {},
+		["Jogo"] = {},
+		["Farm"] = {},
+		["Teleportes"] = {}
+	}
+
+	-- 🧭 Menu de Abas
+	local abasFrame = Instance.new("Frame")
+	abasFrame.Size = UDim2.new(1, 0, 0, 30)
+	abasFrame.BackgroundTransparency = 1
+	abasFrame.Position = UDim2.new(0, 0, 0, 30)
+	abasFrame.Parent = configFrame
+
+	-- 🔁 Função para criar abas
+	local abaSelecionada = "Player"
+
+	local function atualizarVisibilidade()
+		for nomeSecao, elementos in pairs(secoes) do
+			for _, ui in pairs(elementos) do
+				ui.Visible = (nomeSecao == abaSelecionada)
+			end
+		end
+	end
+
+	local function criarAba(nome, posX)
+		local botao = Instance.new("TextButton")
+		botao.Size = UDim2.new(0, 60, 0, 25)
+		botao.Position = UDim2.new(0, posX, 0, 0)
+		botao.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+		botao.Text = nome
+		botao.TextColor3 = Color3.new(1, 1, 1)
+		botao.Font = Enum.Font.GothamBold
+		botao.TextSize = 13
+		botao.Parent = abasFrame
+		applyCorner(botao, UDim.new(0, 4))
+
+		botao.MouseButton1Click:Connect(function()
+			abaSelecionada = nome
+			atualizarVisibilidade()
+		end)
+	end
+
+	-- abas Obs: Criação das abas
+	criarAba("Player", 10)
+	criarAba("Jogo", 80)
+	criarAba("Farm", 150)
+	criarAba("Teleportes", 220)
+	--======================================================--
+	
+	-- Criação de entradas e checkboxes Obs: Melhoria do antigo Frame Config
+
+	local function criarEntrada(titulo, posY, valorAtual, onChange, secao)
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(0, 120, 0, 20)
+		label.Position = UDim2.new(0, 10, 0, posY)
+		label.Text = titulo
+		label.TextColor3 = Color3.new(1,1,1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.Gotham
+		label.TextSize = 14
+		label.TextXAlignment = Enum.TextXAlignment.Left
+		label.Parent = configFrame
+
+		local box = Instance.new("TextBox")
+		box.Size = UDim2.new(0, 70, 0, 20)
+		box.Position = UDim2.new(1, -80, 0, posY)
+		box.Text = tostring(valorAtual)
+		box.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+		box.TextColor3 = Color3.new(1, 1, 1)
+		box.Font = Enum.Font.Gotham
+		box.TextSize = 14
+		box.ClearTextOnFocus = false
+		box.Parent = configFrame
+		applyCorner(box)
+
+		box.FocusLost:Connect(function()
+			local value = tonumber(box.Text)
+			if value then onChange(value) end
+		end)
+
+		label.Visible = false
+		box.Visible = false
+		table.insert(secoes[secao], label)
+		table.insert(secoes[secao], box)
+	end
+
+	local function criarCheckbox(titulo, posY, valorInicial, callback, secao)
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(0, 140, 0, 20)
+		label.Position = UDim2.new(0, 10, 0, posY)
+		label.Text = titulo
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.Gotham
+		label.TextSize = 14
+		label.TextXAlignment = Enum.TextXAlignment.Left
+		label.Parent = configFrame
+
+		local box = Instance.new("TextButton")
+		box.Size = UDim2.new(0, 20, 0, 20)
+		box.Position = UDim2.new(1, -30, 0, posY)
+		box.BackgroundColor3 = valorInicial and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(70, 70, 70)
+		box.Text = valorInicial and "✔" or ""
+		box.TextColor3 = Color3.new(1, 1, 1)
+		box.Font = Enum.Font.GothamBold
+		box.TextSize = 16
+		box.Parent = configFrame
+		applyCorner(box, UDim.new(0, 4))
+
+		box.MouseButton1Click:Connect(function()
+			valorInicial = not valorInicial
+			box.BackgroundColor3 = valorInicial and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(70, 70, 70)
+			box.Text = valorInicial and "✔" or ""
+			callback(valorInicial)
+		end)
+
+		label.Visible = false
+		box.Visible = false
+		table.insert(secoes[secao], label)
+		table.insert(secoes[secao], box)
+	end
+
+	--====================================================================================================================--
+	
+	--=====================================================================================================================--
+
+	-- Controle do proprio personagem Obs: Bom para mods locais.
+
+	-- 🧍 Player Control
+	local ultimoWalkSpeed = 16
+	local ultimoJumpPower = 50
+	local ultimaColisao = true
+	local ultimoESP = false
+
+	-- 1. Velocidade de caminhada
+	local function setWalkSpeed(valor)
+		ultimoWalkSpeed = valor
+		local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = valor
+		end
+	end
+
+	local function setJumpPower(valor)
+		ultimoJumpPower = valor
+		local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.JumpPower = valor
+		end
+	end
+
+	local function setCollision(ativo)
+		ultimaColisao = ativo
+		local character = game.Players.LocalPlayer.Character
+		if character then
+			for _, part in pairs(character:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.CanCollide = ativo
+				end
+			end
+		end
+	end
+
+	local function toggleESP(ativo)
+		ultimoESP = ativo
+		local char = game.Players.LocalPlayer.Character
+		if not char then return end
+
+		local highlight = char:FindFirstChild("PlayerHighlight")
+		if ativo then
+			if not highlight then
+				highlight = Instance.new("Highlight")
+				highlight.Name = "PlayerHighlight"
+				highlight.FillTransparency = 1
+				highlight.OutlineColor = Color3.fromRGB(0, 255, 0)
+				highlight.OutlineTransparency = 0
+				highlight.Parent = char
+			end
+		else
+			if highlight then
+				highlight:Destroy()
+			end
+		end
+	end
+
+	local player = game.Players.LocalPlayer
+	player.CharacterAdded:Connect(function(char)
+		char:WaitForChild("Humanoid")
+
+		task.wait(0.2) -- pequeno delay para garantir que as partes existam
+
+		setWalkSpeed(ultimoWalkSpeed)
+		setJumpPower(ultimoJumpPower)
+		setCollision(ultimaColisao)
+		toggleESP(ultimoESP)
+	end)
+
+
+
+	criarEntrada("Velocidade:", 70, 16, setWalkSpeed, "Player")
+	criarEntrada("Pulo:", 100, 50, setJumpPower, "Player")
+	criarCheckbox("Colisão", 130, true, setCollision, "Player")
+	criarCheckbox("ESP (Highlight)", 160, false, toggleESP, "Player")
+	--====================================================================--
+	
+	--====================================================================================================================--
+	
+	
+	
+	
+	-- 📥 Abrir/Fechar painel de configurações
+	configBtn.MouseButton1Click:Connect(function()
+		configFrame.Visible = not configFrame.Visible
+	end)
+
+
+
 
 	local Buttons = {}
 	local isMinimized = false
@@ -343,12 +601,14 @@ function criar_Gui_Frame()
 
 		-- Torna a imagem visível durante a minimização
 		minimizeImage.Visible = true
+		configBtn.Visible = false
 		imageTween:Play()
 
 		-- Esconde a imagem de minimizar após a animação
 		if not isMinimized then
 			imageTween.Completed:Connect(function()
 				minimizeImage.Visible = false
+				configBtn.Visible = true
 			end)
 		end
 
